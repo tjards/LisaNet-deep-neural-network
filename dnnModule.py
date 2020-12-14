@@ -51,11 +51,12 @@ def train(X, Y, layers_dims, learning_rate, num_iterations, print_cost=True):
             costs.append(cost)
             
     # plot the cost
+    plt.figure()
     plt.plot(np.squeeze(costs))
     plt.ylabel('cost')
     plt.xlabel('iterations (per hundreds)')
     plt.title("Learning rate =" + str(learning_rate))
-    plt.show()
+    
     
     return parameters
 
@@ -487,9 +488,9 @@ def print_mislabeled_images(classes, X, y, p):
     mislabeled_indices = np.asarray(np.where(a == 1))
     plt.rcParams['figure.figsize'] = (40.0, 40.0) # set default size of plots
     num_images = len(mislabeled_indices[0])
+    plt.figure()
     for i in range(num_images):
-        index = mislabeled_indices[1][i]
-        
+        index = mislabeled_indices[1][i]     
         plt.subplot(2, num_images, i + 1)
         plt.imshow(X[:,index].reshape(64,64,3), interpolation='nearest')
         plt.axis('off')

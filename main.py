@@ -6,7 +6,7 @@ Created on Fri Apr 24 18:42:53 2020
 @author: tjards
 """
 
-#%% IMPORT packages 
+#%% IMPORT packages
 
 import time
 import numpy as np
@@ -20,12 +20,14 @@ from scipy import ndimage
 import dnnModule as dnn
 import pickle
 
-#%% SET miscelleous parameters 
 
+#%% Set parameters for the datasets
+# --------------------------------
 plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
-np.random.seed(1) # random seed
+np.random.seed(1) 
+
 
 #%% LOAD and PREP the data 
 
@@ -96,6 +98,8 @@ my_image=image.reshape((num_px*num_px*3,1))
 my_image = my_image/255.
 my_predicted_image = dnn.predict(my_image, my_label_y, parameters)
 #
+plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
+plt.figure()
 plt.imshow(image_arr)
 print ("y = " + str(np.squeeze(my_predicted_image)) + ", your model predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
 
