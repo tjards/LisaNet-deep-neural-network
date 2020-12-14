@@ -61,39 +61,45 @@ plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 np.random.seed(1) 
 
-#%% RUN A DNN
-# -----------
+#%% Training a DNN on the training set
+# ------------------------------------
 parameters = dnn.train(train_x, train_y, layers_dims, learning_rate, num_iterations)
 
-#%% PREDICT
-# ---------
+# save the parameters to file
+file_params = open("network_params.pkl","wb")
+pickle.dump(parameters,file_params)
+file_params.close()
+
+#%% PREDICT on the test set
+# -------------------------
 print('Prediction on the training set: ')
 pred_train = dnn.predict(train_x, train_y, parameters)
 print('Prediction on the test set: ')
 pred_test = dnn.predict(test_x, test_y, parameters)
 dnn.print_mislabeled_images(classes, test_x, test_y, pred_test) # show me the mis-predicted stuff
 
-#%% TEST on a single image
-# ----------------------
+#%% identify a single image
+# ------------------------
 
+# prepare the image
 image_arr = np.array(imageio.imread(path_my_image))
 image = Image.fromarray(image_arr)
 image = image.resize(size=(num_px,num_px))
 image = np.array(image) 
 my_image=image.reshape((num_px*num_px*3,1))
 my_image = my_image/255.
+
+# predict
 print('Prediction on manual input: ')
 my_predicted_image = dnn.predict(my_image, my_label_y, parameters)
-#
+
+# plot
 plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
 plt.figure()
 plt.imshow(image_arr)
-print ("y = " + str(np.squeeze(my_predicted_image)) + ", your model predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
+print ("Model predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
 
-#%% Save the parameters file
-file_params = open("network_params.pkl","wb")
-pickle.dump(parameters,file_params)
-file_params.close()
+
 
 
 
