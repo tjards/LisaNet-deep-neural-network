@@ -7,65 +7,51 @@ Created on Fri Apr 24 18:42:53 2020
 """
 
 #%% IMPORT packages
-
-import time
+#import time
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
-import scipy
-#import PIL
+#import scipy
 import imageio
 from PIL import Image
-from scipy import ndimage
+#from scipy import ndimage
 import dnnModule as dnn
 import pickle
 
-
-#%% Set parameters for the datasets
-# --------------------------------
+#%% SET parameters for the datasets
+# ---------------------------------
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 np.random.seed(1) 
 
-
-#%% LOAD and PREP the data
+#%% PREPARE the data
 # ------------------------
+
+# define paths
 path_train = 'datasets/train_catvnoncat.h5'
 path_test = 'datasets/test_catvnoncat.h5'
 
- 
-
-#training set
+# training set
 train_dataset = h5py.File(path_train, "r")
-train_x_orig = np.array(train_dataset["train_set_x"][:]) # your train set features
-train_y = np.array(train_dataset["train_set_y"][:]) # your train set labels
+train_x_orig = np.array(train_dataset["train_set_x"][:])              # features
+train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T   # flatten (the "-1" makes reshape flatten the remaining dimensions)
+train_x = train_x_flatten/255.                                        # normalize
+train_y = np.array(train_dataset["train_set_y"][:])                   # labels
 train_y = train_y.reshape((1, train_y.shape[0]))
 
-#test set
+# test set
 test_dataset = h5py.File(path_test, "r")
-test_x_orig = np.array(test_dataset["test_set_x"][:]) # your test set features
-test_y = np.array(test_dataset["test_set_y"][:]) # your test set labels
+test_x_orig = np.array(test_dataset["test_set_x"][:])                 # features
+test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T      # flatten
+test_x = test_x_flatten/255.                                          # normalize
+test_y = np.array(test_dataset["test_set_y"][:])                      # labels
 test_y = test_y.reshape((1, test_y.shape[0]))
 
-classes = np.array(test_dataset["list_classes"][:]) # the list of classes
-
-#show a sample
-#index = 15
-#plt.imshow(train_x_orig[index])
-#print ("y = " + str(train_y[0,index]) + ". It's a " + classes[train_y[0,index]].decode("utf-8") +  " picture.")
-
-#extract key vars
-m_train = train_x_orig.shape[0]
-num_px = train_x_orig.shape[1]
-m_test = test_x_orig.shape[0]
-
-#flatten the inputs into nice vectors
-train_x_flatten = train_x_orig.reshape(train_x_orig.shape[0], -1).T   # The "-1" makes reshape flatten the remaining dimensions
-test_x_flatten = test_x_orig.reshape(test_x_orig.shape[0], -1).T
-
-# normalize data to have feature values between 0 and 1.
-train_x = train_x_flatten/255.
-test_x = test_x_flatten/255.
+# pull out key parameters
+classes = np.array(test_dataset["list_classes"][:])     # list of classes
+num_px = train_x_orig.shape[1]                          # image size
+m_train = train_x_orig.shape[0]                         # number of training samples
+m_test = test_x_orig.shape[0]                           # number of test samples
 
 #%% DEFINE the DNN hyperparameters 
 n_x = train_x.shape[0]
