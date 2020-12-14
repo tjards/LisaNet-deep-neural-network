@@ -23,22 +23,26 @@ import pickle
 
 #%% Set parameters for the datasets
 # --------------------------------
-plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 np.random.seed(1) 
 
 
-#%% LOAD and PREP the data 
+#%% LOAD and PREP the data
+# ------------------------
+path_train = 'datasets/train_catvnoncat.h5'
+path_test = 'datasets/test_catvnoncat.h5'
+
+ 
 
 #training set
-train_dataset = h5py.File('datasets/train_catvnoncat.h5', "r")
+train_dataset = h5py.File(path_train, "r")
 train_x_orig = np.array(train_dataset["train_set_x"][:]) # your train set features
 train_y = np.array(train_dataset["train_set_y"][:]) # your train set labels
 train_y = train_y.reshape((1, train_y.shape[0]))
 
 #test set
-test_dataset = h5py.File('datasets/test_catvnoncat.h5', "r")
+test_dataset = h5py.File(path_test, "r")
 test_x_orig = np.array(test_dataset["test_set_x"][:]) # your test set features
 test_y = np.array(test_dataset["test_set_y"][:]) # your test set labels
 test_y = test_y.reshape((1, test_y.shape[0]))
@@ -104,13 +108,11 @@ plt.imshow(image_arr)
 print ("y = " + str(np.squeeze(my_predicted_image)) + ", your model predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
 
 #%% Save the parameters file
-
 file_params = open("network_params.pkl","wb")
 pickle.dump(parameters,file_params)
 file_params.close()
 
-file_params = open("network_params.pkl", "rb")
-print(pickle.load(file_params))
+
 
 
 

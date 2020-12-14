@@ -51,6 +51,7 @@ def train(X, Y, layers_dims, learning_rate, num_iterations, print_cost=True):
             costs.append(cost)
             
     # plot the cost
+    plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
     plt.figure()
     plt.plot(np.squeeze(costs))
     plt.ylabel('cost')
