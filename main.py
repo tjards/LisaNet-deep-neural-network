@@ -18,6 +18,7 @@ import imageio
 from PIL import Image
 from scipy import ndimage
 import dnnModule as dnn
+import pickle
 
 #%% SET miscelleous parameters 
 
@@ -97,4 +98,15 @@ my_predicted_image = dnn.predict(my_image, my_label_y, parameters)
 #
 plt.imshow(image_arr)
 print ("y = " + str(np.squeeze(my_predicted_image)) + ", your model predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
+
+#%% Save the parameters file
+
+file_params = open("network_params.pkl","wb")
+pickle.dump(parameters,file_params)
+file_params.close()
+
+file_params = open("network_params.pkl", "rb")
+print(pickle.load(file_params))
+
+
 
