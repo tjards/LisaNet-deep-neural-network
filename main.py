@@ -24,6 +24,7 @@ import pickle
 # define paths
 path_train = 'datasets/train_catvnoncat.h5'
 path_test = 'datasets/test_catvnoncat.h5'
+path_my_image = "images/russian_cat.jpg"      # manually enter a picture of new cat
 
 # training set
 train_dataset = h5py.File(path_train, "r")
@@ -46,6 +47,8 @@ classes = np.array(test_dataset["list_classes"][:])     # list of classes
 num_px = train_x_orig.shape[1]                          # image size
 m_train = train_x_orig.shape[0]                         # number of training samples
 m_test = test_x_orig.shape[0]                           # number of test samples
+my_label_y = [1]                                        # label of my image (1, 0)
+
 
 #%% SET hyperparameters
 # -----------------------
@@ -63,27 +66,21 @@ np.random.seed(1)
 parameters = dnn.train(train_x, train_y, layers_dims, learning_rate, num_iterations)
 
 #%% PREDICT
+# ---------
 print('Prediction on the training set: ')
 pred_train = dnn.predict(train_x, train_y, parameters)
 print('Prediction on the test set: ')
 pred_test = dnn.predict(test_x, test_y, parameters)
-#show me the mislabed stuff
-dnn.print_mislabeled_images(classes, test_x, test_y, pred_test)
+dnn.print_mislabeled_images(classes, test_x, test_y, pred_test) # show me the mis-predicted stuff
 
-#%% TEST a single sample
-my_image = "russian_cat.jpg" # place the file in "/images" and name here 
-my_label_y = [1] # the true class of your image (1, 0)
+#%% TEST on a single image
+# ----------------------
 
-fname = "images/" + my_image
-#image = np.array(ndimage.imread(fname, flatten=False))
-
-image_arr = np.array(imageio.imread(fname))
+image_arr = np.array(imageio.imread(path_my_image))
 image = Image.fromarray(image_arr)
 image = image.resize(size=(num_px,num_px))
 image = np.array(image) 
 my_image=image.reshape((num_px*num_px*3,1))
-#my_imagine = my_image.reshape((num_px*num_px*3,1))
-#my_image = scipy.misc.imresize(image, size=(num_px,num_px)).reshape((num_px*num_px*3,1))
 my_image = my_image/255.
 print('Prediction on manual input: ')
 my_predicted_image = dnn.predict(my_image, my_label_y, parameters)
