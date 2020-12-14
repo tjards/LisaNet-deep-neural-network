@@ -61,6 +61,7 @@ plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 np.random.seed(1) 
 
+
 #%% Training a DNN on the training set
 # ------------------------------------
 parameters = dnn.train(train_x, train_y, layers_dims, learning_rate, num_iterations)
@@ -70,6 +71,7 @@ file_params = open("network_params.pkl","wb")
 pickle.dump(parameters,file_params)
 file_params.close()
 
+
 #%% PREDICT on the test set
 # -------------------------
 print('Prediction on the training set: ')
@@ -77,6 +79,7 @@ pred_train = dnn.predict(train_x, train_y, parameters)
 print('Prediction on the test set: ')
 pred_test = dnn.predict(test_x, test_y, parameters)
 dnn.print_mislabeled_images(classes, test_x, test_y, pred_test) # show me the mis-predicted stuff
+
 
 #%% identify a single image
 # ------------------------
