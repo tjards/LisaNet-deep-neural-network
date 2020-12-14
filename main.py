@@ -18,12 +18,6 @@ from PIL import Image
 import dnnModule as dnn
 import pickle
 
-#%% SET parameters for the datasets
-# ---------------------------------
-plt.rcParams['image.interpolation'] = 'nearest'
-plt.rcParams['image.cmap'] = 'gray'
-np.random.seed(1) 
-
 #%% PREPARE the data
 # ------------------------
 
@@ -53,20 +47,25 @@ num_px = train_x_orig.shape[1]                          # image size
 m_train = train_x_orig.shape[0]                         # number of training samples
 m_test = test_x_orig.shape[0]                           # number of test samples
 
-#%% DEFINE the DNN hyperparameters 
-n_x = train_x.shape[0]
-n_y = train_y.shape[0]
-layers_dims = [n_x, 20, 7, 5, n_y] #  4-layer model
-learning_rate=0.0075
-num_iterations = 2500
+#%% SET hyperparameters
+# -----------------------
+n_x = train_x.shape[0]              # number of input features
+n_y = train_y.shape[0]              # number of outputs
+layers_dims = [n_x, 20, 7, 5, n_y]  # model size [input, ..., hidden nodes, ... ,output]
+learning_rate=0.0075                # learning rate (< 1.0)
+num_iterations = 2500               # number of iterations
+plt.rcParams['image.interpolation'] = 'nearest'
+plt.rcParams['image.cmap'] = 'gray'
+np.random.seed(1) 
 
 #%% RUN A DNN
+# -----------
 parameters = dnn.train(train_x, train_y, layers_dims, learning_rate, num_iterations)
 
 #%% PREDICT
-print('Prediction on the training set')
+print('Prediction on the training set: ')
 pred_train = dnn.predict(train_x, train_y, parameters)
-print('Prediction on the test set')
+print('Prediction on the test set: ')
 pred_test = dnn.predict(test_x, test_y, parameters)
 #show me the mislabed stuff
 dnn.print_mislabeled_images(classes, test_x, test_y, pred_test)
@@ -86,6 +85,7 @@ my_image=image.reshape((num_px*num_px*3,1))
 #my_imagine = my_image.reshape((num_px*num_px*3,1))
 #my_image = scipy.misc.imresize(image, size=(num_px,num_px)).reshape((num_px*num_px*3,1))
 my_image = my_image/255.
+print('Prediction on manual input: ')
 my_predicted_image = dnn.predict(my_image, my_label_y, parameters)
 #
 plt.rcParams['figure.figsize'] = (5.0, 4.0) # set default size of plots
