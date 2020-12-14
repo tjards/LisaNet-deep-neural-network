@@ -486,7 +486,7 @@ def print_mislabeled_images(classes, X, y, p):
     """
     a = p + y
     mislabeled_indices = np.asarray(np.where(a == 1))
-    plt.rcParams['figure.figsize'] = (40.0, 40.0) # set default size of plots
+    plt.rcParams['figure.figsize'] = (40.0, 10.0) # set default size of plots
     num_images = len(mislabeled_indices[0])
     plt.figure()
     for i in range(num_images):
