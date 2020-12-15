@@ -60,7 +60,7 @@ num_iterations = 2500               # number of iterations
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 np.random.seed(1) 
-fcost = 'x-entropy'                 # x-entropy or mse
+fcost = 'mse' #'x-entropy'                 # x-entropy or mse
 
 #%% Training a DNN on the training set
 # ------------------------------------
