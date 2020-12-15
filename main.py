@@ -60,11 +60,11 @@ num_iterations = 2500               # number of iterations
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 np.random.seed(1) 
-
+fcost = 'x-entropy'                 # x-entropy or mse
 
 #%% Training a DNN on the training set
 # ------------------------------------
-parameters = dnn.train(train_x, train_y, layers_dims, learning_rate, num_iterations)
+parameters = dnn.train(train_x, train_y, layers_dims, learning_rate, num_iterations, print_cost=True,fcost=fcost)
 
 # save the parameters to file
 file_params = open("network_params.pkl","wb")

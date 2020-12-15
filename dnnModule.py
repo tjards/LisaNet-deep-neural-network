@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import h5py
 
 
-def train(X, Y, layers_dims, learning_rate, num_iterations, print_cost=True):
+def train(X, Y, layers_dims, learning_rate, num_iterations, print_cost=True, fcost='x-entropy'):
     """
     Implements a L-layer neural network: [LINEAR->RELU]*(L-1)->LINEAR->SIGMOID.
 
@@ -38,9 +38,12 @@ def train(X, Y, layers_dims, learning_rate, num_iterations, print_cost=True):
         # Forward propagation
         AL, caches = L_model_forward(X,parameters)
         # Compute cost
-        cost = compute_cost(AL,Y)
+        if fcost == 'x-entropy':
+            cost = compute_cost(AL,Y)
+        elif fcost == 'mse':
+            cost = compute_cost_MSE(AL,Y)
         # Backward propagation.
-        grads = L_model_backward(AL,Y,caches)
+        grads = L_model_backward(AL,Y,caches, fcost)
         # Update parameters.
         parameters = update_parameters(parameters,grads,learning_rate)
                 
@@ -279,6 +282,33 @@ def compute_cost(AL, Y):
     
     return cost
 
+
+
+def compute_cost_MSE(AL, Y):
+    """
+    Implement the cost function (Mean Squared Error)
+
+    Arguments:
+    AL -- probability vector corresponding to your label predictions, shape (1, number of examples)
+    Y -- true "label" vector (for example: containing 0 if non-cat, 1 if cat), shape (1, number of examples)
+
+    Returns:
+    cost -- cross-entropy cost
+    """
+    
+    m = Y.shape[1]
+
+    # Compute loss from aL and y.
+    #cost = (1./m) * (-np.dot(Y,np.log(AL).T) - np.dot(1-Y, np.log(1-AL).T))
+    cost = (1./m) * np.sum(np.power(np.subtract(AL,Y),2))
+    cost = np.squeeze(cost)      # To make sure your cost's shape is what we expect (e.g. this turns [[17]] into 17).
+    assert(cost.shape == ())
+    
+    return cost
+
+
+
+
 def linear_backward(dZ, cache):
     """
     Implement the linear portion of backward propagation for a single layer (layer l)
@@ -331,7 +361,7 @@ def linear_activation_backward(dA, cache, activation):
     
     return dA_prev, dW, db
 
-def L_model_backward(AL, Y, caches):
+def L_model_backward(AL, Y, caches, fcost):
     """
     Implement the backward propagation for the [LINEAR->RELU] * (L-1) -> LINEAR -> SIGMOID group
     
@@ -354,7 +384,12 @@ def L_model_backward(AL, Y, caches):
     Y = Y.reshape(AL.shape) # after this line, Y is the same shape as AL
     
     # Initializing the backpropagation
-    dAL = - (np.divide(Y, AL) - np.divide(1 - Y, 1 - AL))
+    if fcost == 'x-entropy':
+        dAL = - (np.divide(Y, AL) - np.divide(1 - Y, 1 - AL))
+    elif fcost == 'mse':
+        #dAL = (1./m) * np.sum(np.subtract(AL,Y))
+        dAL = 2*np.subtract(AL,Y)
+
     
     # Lth layer (SIGMOID -> LINEAR) gradients. Inputs: "AL, Y, caches". Outputs: "grads["dAL"], grads["dWL"], grads["dbL"]
     current_cache = caches[L-1]
